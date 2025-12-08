@@ -35,7 +35,7 @@ const IconSidebar: React.FC<IconSidebarProps> = ({ activeSection, onSectionChang
 
 
   return (
-    <div className="w-16 md:w-20 h-full bg-gray-100 flex flex-col items-center py-4 shadow-lg">
+    <div className="w-16 md:w-20 h-full bg-gray-100 flex flex-col items-center py-4 shadow-lg block md:hidden">
       {/* User avatar */}
       <div className="relative"   onClick={() => setviewprofile(true)}>
         <Avatar
