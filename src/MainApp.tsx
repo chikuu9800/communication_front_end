@@ -95,16 +95,17 @@ const MainApp = () => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <IconSidebar
-        activeSection={activeSection}
-        onSectionChange={setActiveSection}
-        totalUnreadCount={totalUnreadCount}
-      />
-      
+      {/* Hide IconSidebar when a chat is open */}
+      {!(activeSection === 'chats' && activeChat) && (
+        <IconSidebar
+          activeSection={activeSection}
+          onSectionChange={setActiveSection}
+          totalUnreadCount={totalUnreadCount}
+        />
+      )}
       <div className="flex-1 flex overflow-hidden">
         {renderContent()}
       </div>
-
       {showAppsPopup && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
