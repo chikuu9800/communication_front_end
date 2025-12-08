@@ -31,7 +31,7 @@ class SocketManager {
 
     this.isConnecting = true;
 
-    this.socket = io("https://communication-production-a104.up.railway.app", {
+    this.socket = io("http://localhost:4000", {
       auth: { token },
       transports: ["websocket"],
       reconnection: true,
