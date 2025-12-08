@@ -178,26 +178,21 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ closeprofile }) => {
 
   return (
     <div className="h-screen bg-gray-50 overflow-hidden">
-      <div className="max-w-4xl mx-auto px-4 py-8 h-full overflow-y-auto">
-
-        <div className="mb-6 flex items-center">
-          <button onClick={() => {
-            closeprofile(false);
-          }} >
-            <ArrowLeft className="h-5 w-5 mr-2" />
+      <div className="max-w-4xl mx-auto px-2 sm:px-4 py-4 sm:py-8 h-full overflow-y-auto">
+        <div className="mb-6 flex flex-col sm:flex-row items-center sm:items-center">
+          <button onClick={() => { closeprofile(false); }} className="mb-2 sm:mb-0">
+            <ArrowLeft className="h-5 w-5 mr-2 inline-block" />
             Back to Dashboard
           </button>
-
         </div>
-
         <div className="bg-white rounded-2xl shadow-sm ">
-          <div className="relative h-48 bg-gradient-to-r from-primary-500 to-primary-600 ">
-            <div className="absolute -bottom-16 left-8">
+          <div className="relative h-40 sm:h-48 bg-gradient-to-r from-primary-500 to-primary-600 ">
+            <div className="absolute -bottom-16 left-4 sm:left-8">
               <div className="relative">
                 <Avatar
                   name={profile.name}
                   size="xl"
-                  className="ring-4 ring-white w-32 h-32"
+                  className="ring-4 ring-white w-24 h-24 sm:w-32 sm:h-32"
                   src={
                     profile.avatar?.path
                       ? `http://localhost:4000${profile.avatar.path}`
@@ -225,8 +220,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ closeprofile }) => {
             </div>
           </div>
 
-          <div className="pt-20 pb-8 px-8">
-            <div className="flex justify-between items-start mb-8">
+          <div className="pt-20 pb-8 px-4 sm:px-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start mb-8 gap-4">
               <div>
                 {isEditing ? (
                   <input
@@ -251,7 +246,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ closeprofile }) => {
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
               <div className="space-y-6">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
