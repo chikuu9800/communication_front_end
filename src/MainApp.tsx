@@ -5,6 +5,7 @@ import CallsView from './components/calls/CallsView';
 import FilesView from './components/files/FilesView';
 import MeetView from './components/meet/MeetView';
 import AppsView from './components/apps/AppsView';
+import Sidebar from './components/layout/Sidebar';
 
 interface Channel {
   id: string;
@@ -23,6 +24,7 @@ const MainApp = () => {
   const [showAppsPopup, setShowAppsPopup] = useState(false);
   const [channels, setChannels] = useState<Channel[]>([]);
   const [totalUnreadCount, setTotalUnreadCount] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(true); // new state
 
   useEffect(() => {
     const handleResize = () => {
@@ -40,12 +42,13 @@ const MainApp = () => {
   }, [channels]);
 
   const handleChatSelect = (chatId: string) => {
-    console.log('Selected chat:', chatId);
     setActiveChat(chatId);
+    if (isMobile) setSidebarOpen(false); // hide sidebar on mobile when chat opens
   };
 
   const handleBackToChats = () => {
     setActiveChat(null);
+    if (isMobile) setSidebarOpen(true); // show sidebar on mobile when back from chat
   };
 
   const handleBackToSection = () => {
@@ -95,8 +98,8 @@ const MainApp = () => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Hide IconSidebar when a chat is open */}
-      {!(activeSection === 'chats' && activeChat) && (
+      {/* Mobile: show IconSidebar when sidebar is closed */}
+      {isMobile && !sidebarOpen && (
         <IconSidebar
           activeSection={activeSection}
           onSectionChange={setActiveSection}
@@ -104,6 +107,19 @@ const MainApp = () => {
         />
       )}
       <div className="flex-1 flex overflow-hidden">
+        {/* Mobile: show Sidebar only if open, Desktop: always show */}
+        {(sidebarOpen || !isMobile) && (
+          <Sidebar
+            isMobile={isMobile}
+            isOpen={sidebarOpen}
+            onToggle={() => setSidebarOpen(!sidebarOpen)}
+            activeChat={activeChat}
+            onChatSelect={handleChatSelect}
+            chats={channels}
+            setChats={setChannels}
+            isGroupChat={(chat) => chat.type === 'group'}
+          />
+        )}
         {renderContent()}
       </div>
       {showAppsPopup && (
