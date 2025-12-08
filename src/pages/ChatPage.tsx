@@ -257,25 +257,48 @@ const ChatPage: React.FC<ChatPageProps> = ({
 
     const handleReceiveMessage = (rawMsg: any) => {
       const formatted = normalizeMessage(rawMsg, user?.id);
+      console.log('Received message:', formatted);
       setMessages((prev) => {
         let updated = [...prev];
         if (formatted.isCurrentUser) {
           updated = updated.filter((m) => !m.tempId);
         }
+        // If this message is a reply and the replied-to message is missing, add a stub
+        if (formatted.replyTo && !updated.some(m => m.id === formatted.replyTo)) {
+          updated = [
+            ...updated,
+            {
+              id: formatted.replyTo,
+              channelId: formatted.channelId,
+              sender: { id: '', name: 'Unknown', avatar: '' },
+              content: '',
+              timestamp: '',
+              status: 'sent',
+              isCurrentUser: false,
+              replyTo: null,
+              forwardedFrom: null,
+              seenBy: [],
+              tempId: null,
+              attachments: [],
+            }
+          ];
+          console.log('Added stub for replied-to message:', formatted.replyTo);
+        }
         if (updated.some((m) => m.id === formatted.id)) return updated;
         updated = [...updated, formatted];
         messageCache.current[formatted.channelId] = updated;
+        console.log('Updated messages state:', updated);
         return updated;
       });
     };
 
     // Listen for normal and reply messages
     socket.on('receiveMessage', handleReceiveMessage);
-    socket.on('receiveReplyMessage', handleReceiveMessage);
+    socket.on('replyMessage', handleReceiveMessage);
 
     return () => {
       socket.off('receiveMessage', handleReceiveMessage);
-      socket.off('receiveReplyMessage', handleReceiveMessage);
+      socket.off('replyMessage', handleReceiveMessage);
     };
   }, [activeChat, user?.id]);
 
@@ -324,7 +347,7 @@ const ChatPage: React.FC<ChatPageProps> = ({
           },
           tempMessage,
         ];
-        api.get(`/message/${replyTo}`, {
+        api.get(`/message/messages${replyTo}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
         }).then(res => {
           const realMsg = normalizeMessage(res.data, user.id);
@@ -336,7 +359,7 @@ const ChatPage: React.FC<ChatPageProps> = ({
     });
 
     try {
-      const res = await api.post('/message', formData, {
+      const res = await api.post('/message/messages', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,

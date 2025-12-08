@@ -17,6 +17,7 @@ const MessageList = ({
   onDeleteMessage,
   onReplyMessage,
   onForwardMessage,
+  activeChatType, // expects 'group' or 'direct'
 }) => {
   const { user } = useAuth();
   const [editingMessageId, setEditingMessageId] = useState(null);
@@ -228,7 +229,7 @@ const MessageList = ({
   // RENDER MESSAGES
   // -------------------------
   return (
-    <div className="flex-1 overflow-y-auto overflow-x-hidden py-4 px-3 md:px-4 bg-[#ece5dd]">
+    <div className="flex-1 overflow-y-auto overflow-x-hidden py-2 px-1 sm:px-2 md:px-4 bg-[#ece5dd]">
       {Object.keys(groupedMessages).map((date) => (
         <div key={date}>
           <div className="flex items-center my-4">
@@ -252,20 +253,20 @@ const MessageList = ({
               <div
                 key={message.id}
                 className={cn(
-                  "flex mb-3 group",
+                  "flex mb-2 group",
                   outgoing ? "justify-end" : "justify-start",
                   isConsecutive ? "mt-1" : "mt-3"
                 )}
               >
-                {!outgoing && !isConsecutive && (
+                {/* Only show avatar and name if group chat */}
+                {activeChatType === 'group' && !outgoing && !isConsecutive && (
                   <Avatar src={message.sender.avatar ? `${BASE_URL}${message.sender.avatar}` : undefined} name={message.sender.name} size="sm" className="mr-2 mt-1" />
                 )}
-
-                {!outgoing && isConsecutive && <div className="w-8 mr-2" />}
-
-                <div className="max-w-[30%] md:max-w-[20%] min-w-0 relative">
-                  {!isConsecutive && (
-                    <div className={cn("flex mb-1", outgoing ? "justify-end" : "justify-start")}>
+                {activeChatType === 'group' && !outgoing && isConsecutive && <div className="w-8 mr-2" />}
+                <div className="max-w-[90%] sm:max-w-[70%] md:max-w-[60%] lg:max-w-[40%] min-w-0 relative">
+                  {/* Only show name if group chat */}
+                  {activeChatType === 'group' && !isConsecutive && (
+                    <div className={cn("flex mb-1", outgoing ? "justify-end" : "justify-start")}> 
                       <span className="text-sm font-medium">{displayName}</span>
                       <span className="text-xs text-gray-500 ml-2">{formatTime(message.timestamp)}</span>
                     </div>

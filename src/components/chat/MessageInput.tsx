@@ -254,24 +254,15 @@ const MessageInput: React.FC<MessageInputProps> = ({
     setAttachments(prev => prev.filter((_, index) => i !== index));
 
   return (
-    <div className="w-full bg-gray-100 px-3 py-3 pb-5 relative">
-
+    <div className="w-full bg-gray-100 px-2 py-2 pb-4 sm:px-3 sm:py-3 relative">
       {/* WhatsApp Style Reply Box */}
       {replyingTo && (
-        <div className="flex items-center justify-between bg-white border-l-4 border-green-600 px-3 py-2 mb-2 rounded-lg shadow-sm">
-          <div>
-            <p className="text-[12px] font-semibold text-green-700">
-              Replying to {replyingTo.sender.name}
-            </p>
-            <p className="text-[12px] text-gray-600 truncate max-w-[250px]">
-              {replyingTo.content}
-            </p>
+        <div className="flex flex-wrap items-center justify-between bg-white border-l-4 border-green-600 px-2 py-2 mb-2 rounded-lg shadow-sm">
+          <div className="min-w-0">
+            <p className="text-[12px] font-semibold text-green-700 truncate max-w-[180px] sm:max-w-[250px]">Replying to {replyingTo.sender.name}</p>
+            <p className="text-[12px] text-gray-600 truncate max-w-[180px] sm:max-w-[250px]">{replyingTo.content}</p>
           </div>
-
-          <button
-            className="p-1 hover:bg-gray-200 rounded-full"
-            onClick={onCancelReply}
-          >
+          <button className="p-1 hover:bg-gray-200 rounded-full" onClick={onCancelReply}>
             <X size={14} />
           </button>
         </div>
@@ -281,22 +272,14 @@ const MessageInput: React.FC<MessageInputProps> = ({
       {attachments.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-2">
           {attachments.map((file, idx) => (
-            <div
-              key={idx}
-              className="flex items-center bg-white border rounded-lg px-3 py-1 text-sm shadow-sm"
-            >
+            <div key={idx} className="flex items-center bg-white border rounded-lg px-2 py-1 text-sm shadow-sm max-w-[60vw] sm:max-w-[300px]">
               {file.type.startsWith("image/") ? (
                 <Image size={16} className="text-green-600" />
               ) : (
                 <FileText size={16} className="text-green-600" />
               )}
-
-              <span className="ml-2 truncate max-w-[110px]">{file.name}</span>
-
-              <button
-                onClick={() => removeAttachment(idx)}
-                className="ml-2 p-1 hover:bg-gray-200 rounded-full"
-              >
+              <span className="ml-2 truncate max-w-[80px] sm:max-w-[110px]">{file.name}</span>
+              <button onClick={() => removeAttachment(idx)} className="ml-2 p-1 hover:bg-gray-200 rounded-full">
                 <X size={13} />
               </button>
             </div>
@@ -305,41 +288,28 @@ const MessageInput: React.FC<MessageInputProps> = ({
       )}
 
       {/* WhatsApp Style Input */}
-      <form onSubmit={handleSubmit} className="flex items-end gap-2">
-        
+      <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-2">
         {/* Input Box */}
-        <div className="flex items-center bg-white border border-gray-300 px-3 py-2 rounded-3xl flex-1 shadow-sm">
-          
+        <div className="flex items-center bg-white border border-gray-300 px-2 py-2 rounded-3xl flex-1 shadow-sm min-w-0">
           {/* Attach Icon */}
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="p-2 hover:bg-gray-100 rounded-full"
-          >
+          <button type="button" onClick={() => fileInputRef.current?.click()} className="p-2 hover:bg-gray-100 rounded-full">
             <Paperclip size={20} className="text-gray-600" />
           </button>
-
           {/* Emojis */}
-          <button
-            type="button"
-            onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)}
-            className="p-2 hover:bg-gray-100 rounded-full"
-          >
+          <button type="button" onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)} className="p-2 hover:bg-gray-100 rounded-full">
             <Smile size={20} className="text-gray-600" />
           </button>
-
           {/* Textarea */}
           <textarea
             ref={textareaRef}
             value={message}
             rows={1}
             placeholder="Message"
-            className="flex-1 bg-transparent resize-none outline-none text-sm px-2 max-h-[120px]"
+            className="flex-1 bg-transparent resize-none outline-none text-sm px-2 max-h-[120px] min-w-0"
             onChange={(e) => {
               setMessage(e.target.value);
               textareaRef.current!.style.height = "40px";
-              textareaRef.current!.style.height =
-                Math.min(textareaRef.current!.scrollHeight, 120) + "px";
+              textareaRef.current!.style.height = Math.min(textareaRef.current!.scrollHeight, 120) + "px";
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
@@ -348,45 +318,21 @@ const MessageInput: React.FC<MessageInputProps> = ({
               }
             }}
           />
-
         </div>
-
         {/* WhatsApp Green Send Button */}
-        <button
-          type="submit"
-          disabled={!message.trim() && attachments.length === 0}
-          className="p-3 bg-green-600 text-white rounded-full shadow-md hover:bg-green-700 disabled:opacity-40"
-        >
+        <button type="submit" disabled={!message.trim() && attachments.length === 0} className="p-3 bg-green-600 text-white rounded-full shadow-md hover:bg-green-700 disabled:opacity-40">
           <Send size={18} />
         </button>
-
-        <input
-          type="file"
-          multiple
-          ref={fileInputRef}
-          onChange={handleFileChange}
-          className="hidden"
-        />
+        <input type="file" multiple ref={fileInputRef} onChange={handleFileChange} className="hidden" />
       </form>
-
       {/* Emoji Picker */}
       {isEmojiPickerOpen && (
-        <div className="absolute bottom-20 right-4 bg-white border shadow-xl rounded-xl p-3 grid grid-cols-6 gap-2">
-          {["😊","😂","❤️","🔥","🎉","👍","👌","😢","🙏","💯","🤔","😎"].map(e => (
-            <button
-              key={e}
-              onClick={() => {
-                setMessage(prev => prev + e);
-                setIsEmojiPickerOpen(false);
-              }}
-              className="text-xl p-1 hover:bg-gray-100 rounded-lg"
-            >
-              {e}
-            </button>
+        <div className="absolute bottom-20 right-2 sm:right-4 bg-white border shadow-xl rounded-xl p-3 grid grid-cols-6 gap-2">
+          {["😊", "😂", "❤️", "🔥", "🎉", "👍", "👌", "😢", "🙏", "💯", "🤔", "😎"].map(e => (
+            <button key={e} onClick={() => { setMessage(prev => prev + e); setIsEmojiPickerOpen(false); }} className="text-xl p-1 hover:bg-gray-100 rounded-lg">{e}</button>
           ))}
         </div>
       )}
-
     </div>
   );
 };
